@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import queryString from 'query-string';
@@ -39,6 +40,9 @@ const MoviesPage = () => {
   const searchValue = useSelector(getSearchValue);
   const notFound = useSelector(getNotFoundState);
   const isLoading = useSelector(getLoading);
+  const serchValueByQqeryString =
+    queryString.parse(location.search).query ?? '';
+  console.log(serchValueByQqeryString);
 
   useEffect(() => {
     if (searchValue.trim() === '') {
@@ -49,18 +53,14 @@ const MoviesPage = () => {
       ...location,
       search: `query=${searchValue}`,
     });
+  }, [searchValue]);
 
-    dispatch(fetchMovieByName(searchValue));
-    return () => dispatch(notFoundPageAction(false));
-  }, [searchValue, dispatch]);
-
-  const serchValueByQqeryString =
-    queryString.parse(location.search).query ?? '';
   useEffect(() => {
     if (serchValueByQqeryString === '') {
       return;
     }
     dispatch(fetchMovieByName(serchValueByQqeryString));
+    return () => dispatch(notFoundPageAction(false));
   }, [dispatch, serchValueByQqeryString]);
 
   return (
